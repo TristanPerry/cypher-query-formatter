@@ -1,0 +1,141 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Neo4j Cypher Query Formatter</title>
+  <meta name="description" content="Neo4j Cypher Query Formatter">
+  <meta name="author" content="Tristan Perry">
+  <link rel="canonical" href="https://www.tristanperry.com/cypher-query-formatter" />
+
+  <style type="text/css">
+    body {
+      background-color: #faf8ff;
+      color: #00004c;
+      margin-top: 0;
+      font-family: helvetica, arial, sans-serif;
+    }
+    #container {
+      background-color: #e4edff;
+      width: 80%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1em;
+      border-left: 1px dashed #9197a2;
+      border-right: 1px dashed #9197a2;
+      height: 100%;
+    }
+    #container h1 {
+      margin-top: 0;
+    }
+    blockquote {
+      font-style: italic;
+      margin-left: 0;
+    }
+    .strike {
+      text-decoration: line-through;
+      font-size: 60%;
+    }
+    #formatbutton {
+      cursor: pointer;
+      font-size: 120%;
+    }
+    #input {
+      width: 100%;
+      height: 40vh;
+      color: #ccc;
+    }
+  </style>
+
+</head>
+
+<body>
+<div id="container">
+  <h1>Neo4j Cypher Query Formatter</h1>
+  <blockquote>"Because Cypher's <span class="strike">hard enough without having zero formatting tools as well</span> beauty can be improved even more with formatting"</blockquote>
+  <p>A simple Neo4j Cypher query formatting tool which I built after not seeing any others online. All code is available <a href="https://github.com/TristanPerry/cypher-query-formatter">on Github</a> - contributions welcome.</p>
+  <h2>Input</h2>
+  <textarea id="input" spellcheck="false">
+MATCH    (n:NamedWidget{draft: false}) WHERE n.someval = NULL OR n.otherval = fAlSe
+   RETURN distinct {
+  id: n.id,
+  name: n.name
+} as result LIMIT 15
+
+
+UNION MATCH (n:NamedWidget) WHERE n.id IN ["some","list"]
+    ANd EXISTS {
+  MATCH (p)-->(c:Company)
+  WHERE c.name = 'Neo4j'
+}
+RETURN {  id: n.id,name: n.name } as result
+LIMIT 15;
+
+    </textarea>
+  <button id="formatbutton" onclick="format()">Format/Beautify</button>
+  <p>(or press Ctrl+Enter)</p>
+  <h2>Output</h2>
+  <pre id="output"></pre>
+  <button id="copybutton" onclick="copyOutput()">Copy to Clipboard</button>
+  <p id="copiedmessage" style="display: none;">Copied!</p>
+</div>
+<script type="text/javascript" src="format.js"></script>
+<script type="text/javascript">
+var onetimeInit = false;
+// when clicking into the input text box, change to a properly styled (not 'greyed out') input box without any content
+document.getElementById('input').onfocus = function(e) {
+  if (!onetimeInit) {
+    e.srcElement.style = 'color: #00004c;';
+    e.srcElement.value = '';
+    document.getElementById('output').textContent = '';
+    onetimeInit = true;
+  }
+};
+
+document.getElementById('input').onkeydown = function(e) {
+    // thanks to Serhii Matrunchyk @ https://stackoverflow.com/a/36478923/6345090
+    if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
+        format();
+    }
+};
+
+function format() {
+  document.getElementById('output').textContent = formatQuery(document.getElementById('input').value);
+}
+
+function copyOutput() {
+    copyToClipboard(document.getElementById('output').textContent);
+    document.getElementById('copiedmessage').style = "display: block;";
+    setTimeout(function() {
+        document.getElementById('copiedmessage').style = "display: none;";
+    }, 2000);
+}
+
+// thanks to Diego Fortes @ https://stackoverflow.com/a/59594066/6345090
+function copyToClipboard(text) {
+    if (window.clipboardData && window.clipboardData.setData) {
+        // IE specific code path to prevent textarea being shown while dialog is visible.
+        return clipboardData.setData("Text", text);
+
+    } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+        var textarea = document.createElement("textarea");
+        textarea.textContent = text;
+        textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+        } catch (ex) {
+            console.warn("Copy to clipboard failed.", ex);
+            return false;
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    }
+}
+
+format(); // show sample output
+</script>
+</body>
+</html>
