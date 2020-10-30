@@ -2,7 +2,7 @@ function formatQuery(query) {
     // a primitive regex approach, based loosely on the Cypher style guide at: https://neo4j.com/developer/cypher-style-guide/
 
     // "Keywords, similar to clauses, should be styled in all capital letters and are not case-sensitive, but do not need to be placed on a separate line."
-    query = query.replace(/\b(WHEN|CASE|AND|DISTINCT|AS|IN|STARTS WITH|CONTAINS|NOT)\b/gi, function(match) {
+    query = query.replace(/\b(WHEN|CASE|AND|OR|XOR|DISTINCT|AS|IN|STARTS WITH|ENDS WITH|CONTAINS|NOT)\b/gi, function(match) {
         return ' ' + match.toUpperCase().trim() + ' '
     });
 
@@ -12,7 +12,7 @@ function formatQuery(query) {
     });
 
     // Now ensure that all 'main' Cypher keywords are on a new line
-    query = query.replace(/\b(CASE|DETACH DELETE|DELETE|MATCH|MERGE|LIMIT|OPTIONAL MATCH|RETURN|UNWIND|UNION|WHERE|WITH)\b/gi, function(match) {
+    query = query.replace(/\b(CASE|DETACH DELETE|DELETE|MATCH|MERGE|LIMIT|OPTIONAL MATCH|RETURN|UNWIND|UNION|WHERE|WITH|GROUP BY)\b/gi, function(match) {
         // ".replace(/^\s+/,"")" removes whitespace from the start of the line (safer than using "trimStart()" right now)
         return '\n' + match.toUpperCase().replace(/^\s+/,"") + ' '
     });
