@@ -56,6 +56,8 @@
   <blockquote>"Because Cypher's <span class="strike">hard enough without having zero formatting tools as well</span> beauty can be improved even more with formatting"</blockquote>
   <p>A simple Neo4j Cypher query formatting tool which I built after not seeing any others online. All code is available <a href="https://github.com/TristanPerry/cypher-query-formatter">on Github</a> - contributions welcome.</p>
   <h2>Input</h2>
+  <button id="formatbutton" onclick="format()">Format/Beautify</button>
+  <p>(or press Ctrl+Enter)</p>
   <textarea id="input" spellcheck="false">
 MATCH    (n:NamedWidget{draft: false}) WHERE n.someval = NULL OR n.otherval = fAlSe
    RETURN distinct {
@@ -73,11 +75,9 @@ RETURN {  id: n.id,name: n.name } as result
 LIMIT 15;
 
     </textarea>
-  <button id="formatbutton" onclick="format()">Format/Beautify</button>
-  <p>(or press Ctrl+Enter)</p>
   <h2>Output</h2>
-  <pre id="output"></pre>
   <button id="copybutton" onclick="copyOutput()">Copy to Clipboard</button>
+  <pre id="output"></pre>
   <p id="copiedmessage" style="display: none;">Copied!</p>
 </div>
 <script type="text/javascript" src="format.js"></script>
